@@ -1,23 +1,24 @@
+package jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  * ■ データベースに接続するプログラム
- * データベースに接続し、テーブルの内容を変更する処理。
- *
- * 問①〜問⑥までを回答し、データベースと接続してみましょう。
- * カリキュラム「データベースを扱うための準備」を参考にして下さい。
+ * データベースへ接続し、指定(任意)の値を取得し、表示させる処理。
+ * 問①〜⑤の回答をお願いします。
  *
  * 実行結果の提出に関しては、
  * いつも通りソースをコミットしていただきますが、
  * 今回は実行結果のスクリーンショットも合わせて提出していただきます。
- * 画像名はDBUpdate.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
+ * 画像名はDBPrepared.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
  *
  */
-public class DBUpdate {
+
+public class DBPrepared {
 
     /** ドライバーのクラス名 */
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
@@ -26,6 +27,7 @@ public class DBUpdate {
     // 問① データベースのホスト名・データベース名を定数にしなさい。
     private static final String JDBC_CONNECTION =
             "jdbc:postgresql://localhost:5433/jdbc_db";
+
     /** ・ユーザー名 */
     // 問② データベースのユーザー名を定数にしなさい
     private static final String USER = "postgres";
@@ -39,26 +41,25 @@ public class DBUpdate {
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
 
         try {
             Class.forName(POSTGRES_DRIVER);
-
             // 問④ 問①〜③の定数を使ってデータベースと接続しなさい。
             connection = DriverManager.getConnection(
                     JDBC_CONNECTION, USER, PASS);
 
-            statement = connection.createStatement();
+            String SQL = "SELECT * FROM shohin_tb WHERE shohin_id = ? OR shohin_id = ?";
+            preparedStatement = connection.prepareStatement(SQL);
 
-            // 問⑤ SHOHIN_IDが020のSHOHIN_NAMEを「商品20」に変更するためのSQL文を記述しましょう。
-            String SQL = "UPDATE shohin_tb SET shohin_name = '商品20' WHERE shohin_id = '020'";
+            /*
+             * 問⑤ SHOHIN_IDが001と020のものを表示できるように
+             * PreparedStatementインターフェースを使って値をSQL文にセットしてみましょう。
+             */
+            preparedStatement.setString(1, "001");
+            preparedStatement.setString(2, "020");
 
-            // 問⑥ 上記のSQL文を実行するための文を記述しましょう。
-            int updateCount = statement.executeUpdate(SQL);
-            System.out.println("更新件数：" + updateCount);
-
-            // 一覧表示
-            String SQLselect = "SELECT * FROM shohin_tb";
-            resultSet = statement.executeQuery(SQLselect);
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 String column1 = resultSet.getString("shohin_id");
@@ -69,16 +70,17 @@ public class DBUpdate {
                 System.out.print(column2 + ",");
                 System.out.println(column3);
             }
-        // forName()で例外発生
+            // forName()で例外発生
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        // getConnection()、createStatement()、executeQuery()で例外発生
+         // getConnection()、createStatement()、executeQuery()で例外発生
         } catch (SQLException e) {
             e.printStackTrace();
 
         } finally {
             try {
                 if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
                 if (statement != null) statement.close();
                 if (connection != null) connection.close();
 

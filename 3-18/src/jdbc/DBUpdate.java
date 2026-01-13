@@ -1,3 +1,4 @@
+package jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -6,31 +7,31 @@ import java.sql.Statement;
 
 /**
  * ■ データベースに接続するプログラム
- * データベースに接続し、任意のカラムを表示させる処理。
+ * データベースに接続し、テーブルの内容を変更する処理。
  *
- * 問①〜問⑥までの回答をお願いします。
+ * 問①〜問⑥までを回答し、データベースと接続してみましょう。
+ * カリキュラム「データベースを扱うための準備」を参考にして下さい。
  *
  * 実行結果の提出に関しては、
  * いつも通りソースをコミットしていただきますが、
  * 今回は実行結果のスクリーンショットも合わせて提出していただきます。
- * 画像名はDBSelect.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
+ * 画像名はDBUpdate.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
  *
  */
-public class DBSelect {
+public class DBUpdate {
 
     /** ドライバーのクラス名 */
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
 
-    /** JDBC接続先情報 */
+    /** ・JDMC接続先情報 */
     // 問① データベースのホスト名・データベース名を定数にしなさい。
     private static final String JDBC_CONNECTION =
             "jdbc:postgresql://localhost:5433/jdbc_db";
-
-    /** ユーザー名 */
-    // 問② データベースのユーザー名を定数にしなさい。
+    /** ・ユーザー名 */
+    // 問② データベースのユーザー名を定数にしなさい
     private static final String USER = "postgres";
 
-    /** パスワード */
+    /** ・パスワード */
     // 問③ データベースのパスワードを定数にしなさい。
     private static final String PASS = "jyon0506";
 
@@ -49,13 +50,18 @@ public class DBSelect {
 
             statement = connection.createStatement();
 
-            // 問⑤ SHOHIN_IDが001と020のものを表示させるためのSQL文を記述しましょう。
-            String SQL = "SELECT * FROM shohin_tb WHERE shohin_id IN ('001','020')";
+            // 問⑤ SHOHIN_IDが020のSHOHIN_NAMEを「商品20」に変更するためのSQL文を記述しましょう。
+            String SQL = "UPDATE shohin_tb SET shohin_name = '商品20' WHERE shohin_id = '020'";
 
-            resultSet = statement.executeQuery(SQL);
+            // 問⑥ 上記のSQL文を実行するための文を記述しましょう。
+            int updateCount = statement.executeUpdate(SQL);
+            System.out.println("更新件数：" + updateCount);
+
+            // 一覧表示
+            String SQLselect = "SELECT * FROM shohin_tb";
+            resultSet = statement.executeQuery(SQLselect);
 
             while (resultSet.next()) {
-            	// 問⑥ それぞれカラム名を入力して下さい。
                 String column1 = resultSet.getString("shohin_id");
                 String column2 = resultSet.getString("shohin_name");
                 int column3 = resultSet.getInt("tanka");
@@ -64,10 +70,10 @@ public class DBSelect {
                 System.out.print(column2 + ",");
                 System.out.println(column3);
             }
-            // forName()で例外発生
+        // forName()で例外発生
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            // getConnection()、createStatement()、executeQuery()で例外発生
+        // getConnection()、createStatement()、executeQuery()で例外発生
         } catch (SQLException e) {
             e.printStackTrace();
 

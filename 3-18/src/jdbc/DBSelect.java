@@ -1,3 +1,4 @@
+package jdbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -6,21 +7,17 @@ import java.sql.Statement;
 
 /**
  * ■ データベースに接続するプログラム
+ * データベースに接続し、任意のカラムを表示させる処理。
  *
- * カリキュラム「JDBCドライバ」を参考に
- * JDBCドライブのjarファイルの設置とビルドパスの追加も忘れないようにしましょう。
- *
- * 問①〜問④までを回答し、データベースと接続してみましょう。
- * カリキュラム「データベースを扱うための準備」を参考にして下さい。
+ * 問①〜問⑥までの回答をお願いします。
  *
  * 実行結果の提出に関しては、
  * いつも通りソースをコミットしていただきますが、
  * 今回は実行結果のスクリーンショットも合わせて提出していただきます。
- * 画像名はDBAccess.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
+ * 画像名はDBSelect.pngとして、3-18フォルダの中に入れ、これまでと同様に提出して下さい。
  *
  */
-
-public class DBAccess {
+public class DBSelect {
 
     /** ドライバーのクラス名 */
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
@@ -30,11 +27,11 @@ public class DBAccess {
     private static final String JDBC_CONNECTION =
             "jdbc:postgresql://localhost:5433/jdbc_db";
 
-    /** ・JDMC接続先情報 */
-    // 問① データベースのホスト名・データベース名を定数にしなさい。
+    /** ユーザー名 */
+    // 問② データベースのユーザー名を定数にしなさい。
     private static final String USER = "postgres";
 
-    /** ・パスワード */
+    /** パスワード */
     // 問③ データベースのパスワードを定数にしなさい。
     private static final String PASS = "jyon0506";
 
@@ -53,10 +50,13 @@ public class DBAccess {
 
             statement = connection.createStatement();
 
-            String SQL = "SELECT * FROM shohin_tb";
+            // 問⑤ SHOHIN_IDが001と020のものを表示させるためのSQL文を記述しましょう。
+            String SQL = "SELECT * FROM shohin_tb WHERE shohin_id IN ('001','020')";
+
             resultSet = statement.executeQuery(SQL);
 
             while (resultSet.next()) {
+            	// 問⑥ それぞれカラム名を入力して下さい。
                 String column1 = resultSet.getString("shohin_id");
                 String column2 = resultSet.getString("shohin_name");
                 int column3 = resultSet.getInt("tanka");
@@ -65,10 +65,10 @@ public class DBAccess {
                 System.out.print(column2 + ",");
                 System.out.println(column3);
             }
-         // forName()で例外発生
+            // forName()で例外発生
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-         // getConnection()、createStatement()、executeQuery()で例外発生
+            // getConnection()、createStatement()、executeQuery()で例外発生
         } catch (SQLException e) {
             e.printStackTrace();
 
