@@ -25,7 +25,7 @@ public class DBSelect {
     /** JDBC接続先情報 */
     // 問① データベースのホスト名・データベース名を定数にしなさい。
     private static final String JDBC_CONNECTION =
-            "jdbc:postgresql://localhost:5433/jdbc_db";
+            "jdbc:postgresql://localhost:5434/jdbc_db";
 
     /** ユーザー名 */
     // 問② データベースのユーザー名を定数にしなさい。
