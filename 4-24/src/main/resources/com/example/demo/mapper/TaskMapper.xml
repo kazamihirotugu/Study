@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.TaskMapper">
+
+    <select id="findAll" resultType="com.example.demo.entity.TaskEntity">
+        SELECT
+            task_id AS taskId,
+            task_name AS taskName,
+            task_status AS taskStatus
+        FROM task
+        ORDER BY task_id
+    </select>
+
+    <select id="findById" parameterType="int"
+            resultType="com.example.demo.entity.TaskEntity">
+        SELECT
+            task_id AS taskId,
+            task_name AS taskName,
+            task_status AS taskStatus
+        FROM task
+        WHERE task_id = #{taskId}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO task (task_name, task_status)
+        VALUES (#{taskName}, #{taskStatus})
+    </insert>
+
+    <update id="update">
+        UPDATE task
+        SET
+            task_name = #{taskName},
+            task_status = #{taskStatus}
+        WHERE task_id = #{taskId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM task
+        WHERE task_id = #{taskId}
+    </delete>
+
+</mapper>
